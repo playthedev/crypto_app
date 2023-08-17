@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import { useEffect,useState } from 'react';
 import './App.css';
+import axios from 'axios'
+import Showcoins from './Components/Showcoins'
+ function App() {
+  let [valueOfCoins,setCoins]=useState([]);
+  const [searchWord, setSearchWord] = useState("");
+   useEffect( ()=>{
+    axios.get('https://api.coinstats.app/public/v1/coins?skip=0').then((response)=>{
+      //     // console.log(response.data.coins)  
+         setCoins(response.data.coins);
+      //   result=response.data.coins;
+      //   })
+   } )},[])
+  
+   const filteredCoins = valueOfCoins.filter((coin) => {
+    return coin.name.toLowerCase().includes(searchWord.toLowerCase());
+  });
 
-function App() {
   return (
+ 
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="cryptoHeader">
+        <input type='text'onChange={(event) => {
+            setSearchWord(event.target.value);
+          }}/>
+      </div>
+      <div className='cryptoDisplay'>
+    { filteredCoins.map((coin)=>{
+      return (
+        <Showcoins name={coin.name} symbol={coin.symbol} price={coin.price} icon={coin.icon}/>
+      )
+    })}
+    </div>
     </div>
   );
-}
 
+}
 export default App;
